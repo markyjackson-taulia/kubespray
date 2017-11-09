@@ -3,7 +3,9 @@
   raw: stat /opt/bin/.bootstrapped
   register: need_bootstrap
   failed_when: false
-  tags: facts
+  changed_when: false
+  tags:
+    - facts
 
 - name: Bootstrap | Run bootstrap.sh
   script: bootstrap.sh
@@ -11,7 +13,8 @@
 
 - set_fact:
     ansible_python_interpreter: "/opt/bin/python"
-  tags: facts
+  tags:
+    - facts
 
 - name: Bootstrap | Check if we need to install pip
   shell: "{{ansible_python_interpreter}} -m pip --version"
@@ -20,7 +23,8 @@
   changed_when: false
   check_mode: no
   when: need_bootstrap.rc != 0
-  tags: facts
+  tags:
+    - facts
 
 - name: Bootstrap | Copy get-pip.py
   copy:
@@ -48,4 +52,4 @@
 - name: Install required python modules
   pip:
     name: "{{ item }}"
-  with_items: "{{pip_python_modules}}"
+  with_items: "{{pip_python_coreos_modules}}"
